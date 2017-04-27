@@ -52,7 +52,7 @@ def salvar(senha, titulo):
     f.close()
 
 def encrypt(chave):
-    gpg = gnupg.GPG(gnupghome='/home/regino/.gnupg')
+    gpg = gnupg.GPG(gnupghome='COLE AQUI A PASTA DO GNUPG')
     with open('passwords.txt', 'rb') as f:
         status = gpg.encrypt_file(
             f, recipients=[chave],
@@ -60,7 +60,7 @@ def encrypt(chave):
     os.remove('passwords.txt')
 
 def decrypt(chave):
-    gpg = gnupg.GPG(gnupghome='/home/regino/.gnupg')
+    gpg = gnupg.GPG(gnupghome='COLE AQUI A PASTA DO GNUPG')
     with open('passwords.txt.gpg', 'rb') as f:
         status = gpg.decrypt_file(f, passphrase=chave, output='passwords.txt')
 
