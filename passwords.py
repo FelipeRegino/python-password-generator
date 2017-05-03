@@ -2,6 +2,11 @@ import os
 import base64
 import getpass
 import gnupg
+import sys
+
+pathname = os.path.dirname(sys.argv[0])
+filePathTxt = os.path.abspath(pathname)+"/passwords.txt"
+filePathEncrypted = os.path.abspath(pathname)+"/passwords.txt.gpg"
 
 def main():
     print("Menu:")
@@ -20,7 +25,7 @@ def main():
         main()
     elif x == "2":
         try:
-            f = open('passwords.txt', 'r')
+            f = open(filePathTxt, 'r')
             text = f.readlines()
             if text != []:
                 for t in text:
@@ -29,7 +34,7 @@ def main():
                 print("Nenhuma senha")
             main()
         except FileNotFoundError:
-            f = open('passwords.txt', 'w')
+            f = open(filePathTxt, 'w')
             print("Nenhuma senha")
             main()
 
@@ -44,33 +49,35 @@ def gerar_senha(n):
     return base64.b64encode(octetos)[:n].decode('ascii')
 
 def salvar(senha, titulo):
-    f = open('passwords.txt', 'r')
+    f = open(filePathTxt, 'r')
     text = f.readlines()
     text.append(titulo + ": " + senha + "\n")
-    f = open('passwords.txt', 'w')
+    f = open(filePathTxt, 'w')
     f.writelines(text)
     f.close()
 
 def encrypt(chave):
-    gpg = gnupg.GPG(gnupghome='/home/regino/.gnupg')
-    with open('passwords.txt', 'rb') as f:
+    gpgPath = os.path.expanduser("~/.gnupg")
+    gpg = gnupg.GPG(gnupghome=gpgPath)
+    with open(filePathTxt, 'rb') as f:
         status = gpg.encrypt_file(
             f, recipients=[chave],
             output='passwords.txt.gpg')
-    os.remove('passwords.txt')
+    os.remove(filePathTxt)
 
 def decrypt(chave):
-    gpg = gnupg.GPG(gnupghome='/home/regino/.gnupg')
-    with open('passwords.txt.gpg', 'rb') as f:
-        status = gpg.decrypt_file(f, passphrase=chave, output='passwords.txt')
+    gpgPath = os.path.expanduser("~/.gnupg")
+    gpg = gnupg.GPG(gnupghome=gpgPath)
+    with open(filePathEncrypted, 'rb') as f:
+        status = gpg.decrypt_file(f, passphrase=chave, output=filePathTxt)
 
 def iniciar():
-    if os.path.isfile('passwords.txt.gpg'):
+    if os.path.isfile(filePathEncrypted):
         print("Digite sua senha de decriptação: ")
         pw = getpass.getpass()
         decrypt(str(pw))
-    elif not os.path.isfile('passwords.txt'):
-        os.mknod('passwords.txt')
+    elif not os.path.isfile(filePathTxt):
+        os.mknod(filePathTxt)
 
 iniciar()
 main()
