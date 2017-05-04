@@ -10,7 +10,7 @@ filePathEncrypted = os.path.abspath(pathname)+"/passwords.txt.gpg"
 
 def main():
     print("Menu:")
-    print("0 - Sair\n1 - Adicionar Senha\n2 - Ver Senhas")
+    print("0:Sair 1:Adicionar Senha 2:Ver Senhas")
     x = input()
     if x == "0":
         print("Digite seu email da chave gpg ou o nome da chave: ")
