@@ -7,7 +7,7 @@ import sys
 pathname = os.path.dirname(sys.argv[0])
 filePathTxt = os.path.abspath(pathname)+"/passwords.txt"
 filePathEncrypted = os.path.abspath(pathname)+"/passwords.txt.gpg"
-
+print(filePathTxt)
 def main():
     print("Menu:")
     print("0:Sair 1:Adicionar Senha 2:Ver Senhas")
@@ -59,10 +59,13 @@ def salvar(senha, titulo):
 def encrypt(chave):
     gpgPath = os.path.expanduser("~/.gnupg")
     gpg = gnupg.GPG(gnupghome=gpgPath)
-    with open(filePathTxt, 'rb') as f:
+    with open(filePathTxt, 'r+') as f:
         status = gpg.encrypt_file(
             f, recipients=[chave],
-            output='passwords.txt.gpg')
+            output=filePathEncrypted)
+    f = open(filePathTxt, 'w')
+    f.write(" ")
+    f.close()
     os.remove(filePathTxt)
 
 def decrypt(chave):
@@ -70,6 +73,9 @@ def decrypt(chave):
     gpg = gnupg.GPG(gnupghome=gpgPath)
     with open(filePathEncrypted, 'rb') as f:
         status = gpg.decrypt_file(f, passphrase=chave, output=filePathTxt)
+    if not os.path.isfile(filePathTxt):
+        print("Senha não confere, tente novamente.")
+        iniciar()
 
 def iniciar():
     if os.path.isfile(filePathEncrypted):
