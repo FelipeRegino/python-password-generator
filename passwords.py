@@ -10,17 +10,13 @@ filePathEncrypted = os.path.abspath(pathname)+"/passwords.txt.gpg"
 print(filePathTxt)
 def main():
     print("Menu:")
-    print("0:Sair 1:Adicionar Senha 2:Ver Senhas")
-    x = input()
+    x = input("0:Sair 1:Adicionar Senha 2:Ver Senhas")
     if x == "0":
-        print("Digite seu email da chave gpg ou o nome da chave: ")
-        chave = input()
+        chave = input("Digite seu email da chave gpg ou o nome da chave: ")
         encrypt(chave)
     elif x == "1":
-        print("Digite a quantidade de caracteres que a senha deve ter: ")
-        n = input()
-        print("Digite um titulo para sua senha: ")
-        titulo = input()
+        n = input("Digite a quantidade de caracteres que a senha deve ter: ")
+        titulo = input("Digite um titulo para sua senha: ")
         salvar(gerar_senha(int(n)), titulo)
         main()
     elif x == "2":
